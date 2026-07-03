@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: #edeae4; font-family: 'Space Grotesk', sans-serif; -webkit-font-smoothing: antialiased; }
+  a { -webkit-tap-highlight-color: transparent; }
+</style>
+</helmet>
+
+<div data-screen-label="Washclof — launcher cards" style="min-height: 100vh; background: #edeae4; color: #1c1a17; display: flex; flex-direction: column;">
+
+  <main style="flex: 1; width: 100%; max-width: 1000px; margin: 0 auto; padding: clamp(34px, 6vw, 64px) clamp(22px, 5vw, 56px) clamp(30px, 5vw, 56px);">
+
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: clamp(30px, 5vw, 44px);">
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #8a8478; margin-bottom: 10px;">washclof.com</div>
+        <h1 style="font-size: clamp(38px, 8vw, 52px); font-weight: 700; letter-spacing: -.03em; margin: 0; line-height: 1;">Washclof</h1>
+      </div>
+      <p style="font-size: 15px; color: #57534c; margin: 0; max-width: 320px; line-height: 1.5;">Small web tools for EverQuest &amp; Minecraft. Pick one to launch.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+        <a href="{{ p.url }}" style="display: flex; flex-direction: column; text-decoration: none; color: #fff; background: {{ p.color }}; border-radius: 14px; padding: 24px 22px 22px; min-height: 250px; transition: transform .14s ease, box-shadow .14s ease;" style-hover="transform: translateY(-4px); box-shadow: 0 18px 40px -20px rgba(0,0,0,.5);">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .85;">{{ p.game }}</span>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500; opacity: .75;">{{ p.year }}</span>
+          </div>
+          <div style="flex: 1; min-height: 40px;"></div>
+          <div style="font-size: clamp(21px, 4vw, 24px); font-weight: 700; letter-spacing: -.02em; line-height: 1.1;">{{ p.name }}</div>
+          <div style="font-size: 13px; opacity: .9; margin-top: 10px; line-height: 1.5;">{{ p.desc }}</div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.25);">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; opacity: .85;">{{ p.domain }}</span>
+            <span style="font-size: 18px;">→</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </main>
+
+  <footer style="flex: none; border-top: 1px solid #ddd7ca; padding: 20px clamp(22px, 5vw, 56px); max-width: 1000px; width: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+    <span style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em;">
+      <span style="color: #9a9488;">© 2026 washclof</span>
+      <button type="button" onClick="{{ copyDiscord }}" title="Click to copy my Discord handle" style="appearance: none; background: none; border: none; padding: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em; color: #8a8478; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: color .12s;" style-hover="color: #1c1a17;">
+        <span>discord <span style="color: #b5622f;">washclof</span></span>
+        <span style="color: #b1aa9a;">{{ copiedLabel }}</span>
+      </button>
+    </span>
+    <a href="index.html" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8a8478; text-decoration: none; letter-spacing: .04em; transition: color .12s;" style-hover="color: #1c1a17;">← back to terminal</a>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { projects: null, copied: false };
+
+  copyDiscord = () => {
+    const done = () => {
+      this.setState({ copied: true });
+      clearTimeout(this._t);
+      this._t = setTimeout(() => this.setState({ copied: false }), 1600);
+    };
+    try { navigator.clipboard.writeText('washclof').then(done, done); }
+    catch (e) { done(); }
+  };
+
+  componentDidMount() {
+    fetch('./projects.json')
+      .then(function (r) { return r.json(); })
+      .then((projects) => this.setState({ projects }))
+      .catch(function () { /* falls back to DEFAULTS */ });
+  }
+
+  renderVals() {
+    const DEFAULTS = [
+      { name: 'Modpack Index', url: 'https://modpackindex.com', domain: 'modpackindex.com', game: 'Minecraft', year: '2015', color: '#3f7d4e', desc: 'Search & filter 143,000+ modpacks by mod, version, loader & category.' },
+      { name: 'Norrath Transit Authority', url: 'https://eqnta.com', domain: 'eqnta.com', game: 'EverQuest', year: '2026', color: '#2f6d8f', desc: 'Plan the fastest route between any two EverQuest zones: boats, PoK books, spires, class ports.' },
+      { name: 'EQLFilter', url: 'https://eqlfilter.com', domain: 'eqlfilter.com', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' }
+    ];
+    return { projects: this.state.projects || DEFAULTS, copyDiscord: this.copyDiscord, copiedLabel: this.state.copied ? 'copied ✓' : '' };
+  }
+}
+</script>
+</body>
+</html>
