@@ -117,5 +117,179 @@ class Component extends DCLogic {
   }
 }
 </script>
+
+<!-- Easter eggs: the blinking prompt is real. Type a command, hit Enter. All undone by refresh. -->
+<style>
+  @keyframes wc-fall { to { transform: translateY(120vh) rotate(var(--r, 25deg)); opacity: 0; } }
+  #wc-panic { position: fixed; inset: 0; background: #0e100e; color: #86c99a; font: 14px/1.6 'JetBrains Mono', monospace; padding: clamp(20px,6vw,60px); z-index: 9999; white-space: pre-wrap; overflow: auto; cursor: pointer; animation: wc-blink-in .25s ease-out; }
+  @keyframes wc-blink-in { from { opacity: 0; } }
+</style>
+<script>
+(function () {
+  // ponytail: vanilla, owns its own DOM, self-heals on the reconciler's rare re-render.
+  var buf = '', hist = [], dead = false;
+
+  function esc(s){ return String(s).replace(/[&<>]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c]; }); }
+  function echo(html){ hist.push('<span style="color:#7f9083">' + html + '</span>'); }
+  function promptHTML(cmd){
+    return '<span style="color:#86c99a">washclof</span><span style="color:#4f5f52">@web</span> ~ % <span style="color:#cdd8cf">' + esc(cmd) + '</span>';
+  }
+
+  function ensureTerm(){
+    var main = document.querySelector('main');
+    if (!main) return null;
+    var deco = [].slice.call(main.querySelectorAll(':scope > p')).pop();  // decorative prompt
+    if (deco && deco.querySelector('[style*="wc-blink"]')) deco.style.display = 'none';
+    var term = document.getElementById('wc-term');
+    if (!term) {
+      term = document.createElement('div');
+      term.id = 'wc-term';
+      term.style.cssText = 'font-size:13px;letter-spacing:.04em;margin-top:6px;';
+      main.appendChild(term);
+    }
+    return term;
+  }
+
+  function render(){
+    if (dead) return;
+    var term = ensureTerm();
+    if (!term) return;
+    var out = hist.map(function(l){ return '<p style="margin:2px 0;line-height:1.5;white-space:pre-wrap">' + l + '</p>'; }).join('');
+    term.innerHTML = out +
+      '<p style="margin:6px 0 0;color:#6f8577">' + promptHTML(buf) +
+      '<span style="display:inline-block;width:9px;height:15px;background:#cdd8cf;margin-left:2px;vertical-align:-2px;animation:wc-blink 1.15s steps(1) infinite"></span></p>';
+  }
+
+  function lsOut(){
+    var out = [].slice.call(document.querySelectorAll('main a[href^="http"]')).map(function(a){
+      var d = a.querySelector('span span span');
+      return ((d ? d.textContent : a.getAttribute('href')) || '').trim() + '/';
+    });
+    return out.length ? out.join('   ') : 'modpackindex.com/   eqnta.com/   eqlfilter.com/';
+  }
+
+  var HELP = [
+    'commands:',
+    '  help  whoami  ls  pwd  date  echo  clear',
+    '  coffee  sudo  matrix  exit',
+    '  rm -rf /   — don\'t.'
+  ].join('\n');
+
+  function run(raw){
+    var cmd = (raw || '').trim();
+    buf = '';
+    hist.push(promptHTML(cmd));
+    render();
+    if (!cmd) return;
+    var lc = cmd.toLowerCase();
+
+    if (/^(sudo\s+)?rm\s+-\S*[rf]/.test(lc)) return destroy();
+    if (lc === 'matrix') { matrix(); return render(); }
+    if (lc === 'exit' || lc === 'logout' || lc === 'quit') return logout();
+
+    if (lc === 'help' || lc === '?' || lc === 'man') echo(HELP);
+    else if (lc === 'whoami') echo('a person who still logs in. respect.');
+    else if (/^ls\b/.test(lc)) echo(lsOut());
+    else if (lc === 'clear' || lc === 'cls') hist = [];
+    else if (lc === 'date') echo(esc(new Date().toString()));
+    else if (lc === 'pwd') echo('/home/washclof');
+    else if (/^echo\s/i.test(cmd)) echo(esc(cmd.replace(/^echo\s+/i, '')));
+    else if (/^sudo\s/i.test(cmd)) echo('we trust you have received the usual lecture from the local System Administrator.\n\n' + esc(cmd.replace(/^sudo\s+/i, '')) + ': permission denied. nice try.');
+    else if (lc === 'coffee' || lc === 'brew' || lc === 'make coffee') echo("HTTP 418 — I'm a teapot. ☕");
+    else echo('zsh: command not found: ' + esc(cmd.split(/\s+/)[0]));
+    render();
+  }
+
+  function destroy(){
+    dead = true;
+    render();
+    dead = false; // let the last line paint, then re-lock below
+    var screen = document.querySelector('[data-screen-label]') || document.body;
+    var parts = [];
+    [].forEach.call(screen.children, function(c){
+      if (c.tagName === 'MAIN') [].forEach.call(c.children, function(k){ parts.push(k); });
+      else parts.push(c);
+    });
+    parts.forEach(function(el, i){
+      el.style.setProperty('--r', (Math.random() * 80 - 40).toFixed(1) + 'deg');
+      el.style.animation = 'wc-fall .9s cubic-bezier(.6,.05,.9,.3) forwards';
+      el.style.animationDelay = (i * 70) + 'ms';
+      el.style.pointerEvents = 'none';
+    });
+    dead = true;
+    setTimeout(panic, 700 + parts.length * 70);
+  }
+
+  function panic(){
+    var o = document.createElement('div');
+    o.id = 'wc-panic';
+    o.textContent = [
+      '',
+      '[    0.000000] Kernel panic - not syncing: washclof filesystem obliterated',
+      '[    0.000001] rm: cannot undo -rf. it never could.',
+      '',
+      '        _______',
+      '       / gone. \\    every project. every zone. every modpack.',
+      '       \\_______/    all of it. poof.',
+      '',
+      'Segmentation fault (core dumped)',
+      '',
+      '>>> refresh the page to reboot the machine <<<'
+    ].join('\n');
+    o.onclick = function(){ location.reload(); };
+    document.body.appendChild(o);
+  }
+
+  function logout(){
+    dead = true;
+    var o = document.createElement('div');
+    o.style.cssText = 'position:fixed;inset:0;background:#0e100e;color:#6f8577;font:14px "JetBrains Mono",monospace;display:flex;align-items:center;justify-content:center;z-index:9999;opacity:0;transition:opacity .5s;cursor:pointer';
+    o.textContent = '[ connection to washclof closed. refresh to reconnect. ]';
+    o.onclick = function(){ location.reload(); };
+    document.body.appendChild(o);
+    requestAnimationFrame(function(){ o.style.opacity = '1'; });
+  }
+
+  function matrix(){
+    var c = document.createElement('canvas');
+    c.style.cssText = 'position:fixed;inset:0;z-index:9998;background:#0e100e;cursor:pointer';
+    document.body.appendChild(c);
+    var ctx = c.getContext('2d'), W, H, cols, ys;
+    function size(){ W = c.width = innerWidth; H = c.height = innerHeight; cols = Math.floor(W / 14); ys = []; for (var i = 0; i < cols; i++) ys[i] = Math.random() * H; }
+    size(); addEventListener('resize', size);
+    var chars = 'アイウｦﾝ0123456789<>=%$#*+-'.split(''), raf;
+    function draw(){
+      ctx.fillStyle = 'rgba(14,16,14,.08)'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#86c99a'; ctx.font = '13px monospace';
+      for (var i = 0; i < cols; i++){
+        ctx.fillText(chars[(Math.random() * chars.length) | 0], i * 14, ys[i]);
+        ys[i] = ys[i] > H + Math.random() * 400 ? 0 : ys[i] + 14;
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    function stop(){ cancelAnimationFrame(raf); removeEventListener('resize', size); c.style.transition = 'opacity .6s'; c.style.opacity = '0'; setTimeout(function(){ c.remove(); }, 600); }
+    c.onclick = stop; setTimeout(stop, 7000);
+    echo('entering the matrix... (click to exit)');
+  }
+
+  document.addEventListener('keydown', function(e){
+    if (dead) return;
+    var t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'BUTTON' || t.isContentEditable)) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'Enter') { e.preventDefault(); run(buf); }
+    else if (e.key === 'Backspace') { e.preventDefault(); buf = buf.slice(0, -1); render(); }
+    else if (e.key.length === 1) { e.preventDefault(); buf += e.key; render(); }
+  });
+
+  (function init(){
+    var main = document.querySelector('main');
+    var deco = main && [].slice.call(main.querySelectorAll(':scope > p')).pop();
+    if (!deco || !deco.querySelector('[style*="wc-blink"]')) return setTimeout(init, 120);
+    render();
+  })();
+})();
+</script>
 </body>
 </html>
