@@ -272,7 +272,7 @@ class Component extends DCLogic {
     }
     draw(0);
     function stop(){ cancelAnimationFrame(raf); removeEventListener('resize', size); c.style.transition = 'opacity .6s'; c.style.opacity = '0'; setTimeout(function(){ c.remove(); }, 600); }
-    c.onclick = stop; setTimeout(stop, 7000);
+    c.onclick = stop;
     echo('entering the matrix... (click to exit)');
   }
 
