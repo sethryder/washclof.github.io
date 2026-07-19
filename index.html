@@ -257,17 +257,20 @@ class Component extends DCLogic {
     var ctx = c.getContext('2d'), W, H, cols, ys;
     function size(){ W = c.width = innerWidth; H = c.height = innerHeight; cols = Math.floor(W / 14); ys = []; for (var i = 0; i < cols; i++) ys[i] = Math.random() * H; }
     size(); addEventListener('resize', size);
-    var chars = 'アイウｦﾝ0123456789<>=%$#*+-'.split(''), raf;
-    function draw(){
-      ctx.fillStyle = 'rgba(14,16,14,.08)'; ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = '#86c99a'; ctx.font = '13px monospace';
+    var chars = 'アイウｦﾝ0123456789<>=%$#*+-'.split(''), raf, last = 0;
+    function draw(t){
+      raf = requestAnimationFrame(draw);
+      if (t - last < 55) return;   // ~18fps: steady matrix cadence, not a blur
+      last = t;
+      ctx.fillStyle = 'rgba(14,16,14,.06)'; ctx.fillRect(0, 0, W, H);  // low alpha => long trails
+      ctx.font = '13px monospace';
       for (var i = 0; i < cols; i++){
+        ctx.fillStyle = Math.random() < .06 ? '#d7f5df' : '#86c99a';   // occasional bright head
         ctx.fillText(chars[(Math.random() * chars.length) | 0], i * 14, ys[i]);
         ys[i] = ys[i] > H + Math.random() * 400 ? 0 : ys[i] + 14;
       }
-      raf = requestAnimationFrame(draw);
     }
-    draw();
+    draw(0);
     function stop(){ cancelAnimationFrame(raf); removeEventListener('resize', size); c.style.transition = 'opacity .6s'; c.style.opacity = '0'; setTimeout(function(){ c.remove(); }, 600); }
     c.onclick = stop; setTimeout(stop, 7000);
     echo('entering the matrix... (click to exit)');
