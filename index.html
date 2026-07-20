@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>washclof — web tools for the games I keep coming back to</title>
-<meta name="description" content="I make free, no-account web tools for the games I keep coming back to. They just run in the browser.">
+<meta name="description" content="I make free, no-account tools for the games I keep coming back to.">
 <link rel="canonical" href="https://washclof.com/">
 <meta name="theme-color" content="#0e100e">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://washclof.com/">
 <meta property="og:title" content="washclof — web tools for the games I keep coming back to">
-<meta property="og:description" content="Free, no-account web tools for the games I keep coming back to. They just run in the browser.">
+<meta property="og:description" content="Free, no-account tools for the games I keep coming back to.">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230e100e'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='22' font-weight='700' fill='%2386c99a' text-anchor='middle'%3E%3E%3C/text%3E%3C/svg%3E">
 <script src="./support.js"></script>
@@ -46,7 +46,7 @@
     <p style="font-size: 13px; color: #6f8577; margin: 0 0 clamp(22px, 4vw, 32px); letter-spacing: .04em;"><span style="color: #86c99a;">washclof</span><span style="color: #4f5f52;">@web</span> ~ %<span style="color: #cdd8cf;"> whoami</span></p>
 
     <h1 style="font-size: clamp(40px, 10vw, 58px); font-weight: 700; margin: 0 0 20px; letter-spacing: -.02em; color: #eef3ee; display: flex; align-items: center; gap: 4px; line-height: 1;">washclof</h1>
-    <p style="font-size: clamp(15px, 3.4vw, 17px); color: #9fb0a3; margin: 0; max-width: 560px; line-height: 1.6;">I make web tools for the games I keep coming back to. All free, no accounts, they just run in the browser.</p>
+    <p style="font-size: clamp(15px, 3.4vw, 17px); color: #9fb0a3; margin: 0; max-width: 560px; line-height: 1.6;">I make tools for the games I keep coming back to. All free, no accounts, no nonsense.</p>
 
     <p style="font-size: 13px; color: #6f8577; margin: clamp(38px, 6vw, 50px) 0 6px; letter-spacing: .04em;"><span style="color: #86c99a;">washclof</span><span style="color: #4f5f52;">@web</span> ~ % <span style="color: #cdd8cf;">ls projects/</span></p>
 
@@ -102,11 +102,13 @@ class Component extends DCLogic {
     const DEFAULTS = [
       { name: 'Modpack Index', url: 'https://modpackindex.com', domain: 'modpackindex.com', game: 'Minecraft', year: '2015', color: '#3f7d4e', desc: 'Search & filter 143,000+ modpacks by mod, version, loader & category.' },
       { name: 'Norrath Transit Authority', url: 'https://eqnta.com', domain: 'eqnta.com', game: 'EverQuest', year: '2026', color: '#2f6d8f', desc: 'Plan the fastest route between any two EverQuest zones: boats, PoK books, spires, class ports.' },
-      { name: 'EQLFilter', url: 'https://eqlfilter.com', domain: 'eqlfilter.com', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' }
+      { name: 'EQLFilter', url: 'https://eqlfilter.com', domain: 'eqlfilter.com', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' },
+      { name: 'Piety', url: 'https://github.com/sethryder/piety', domain: 'github.com/sethryder/piety', game: 'Path of Exile', year: '2026', color: '#c04b4b', desc: 'Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer.' }
     ];
     const GAMES = {
       Minecraft: { tag: '#86c99a', border: '#2e4a35' },
-      EverQuest: { tag: '#e8b76b', border: '#4d3f22' }
+      EverQuest: { tag: '#e8b76b', border: '#4d3f22' },
+      'Path of Exile': { tag: '#d98c6a', border: '#4a2c22' }
     };
     const source = this.state.projects || DEFAULTS;
     const projects = source.map(function (p) {

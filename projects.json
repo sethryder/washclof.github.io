@@ -25,5 +25,14 @@
     "year": "2026",
     "color": "#b5622f",
     "desc": "Build, save & share EverQuest Legends loot filters. No account, runs in your browser."
+  },
+  {
+    "name": "Piety",
+    "url": "https://github.com/sethryder/piety",
+    "domain": "github.com/sethryder/piety",
+    "game": "Path of Exile",
+    "year": "2026",
+    "color": "#c04b4b",
+    "desc": "Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer."
   }
 ]

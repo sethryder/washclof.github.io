@@ -28,7 +28,7 @@
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: #8a8478; margin-bottom: 10px;">washclof.com</div>
         <h1 style="font-size: clamp(38px, 8vw, 52px); font-weight: 700; letter-spacing: -.03em; margin: 0; line-height: 1;">Washclof</h1>
       </div>
-      <p style="font-size: 15px; color: #57534c; margin: 0; max-width: 320px; line-height: 1.5;">Small web tools for EverQuest &amp; Minecraft. Pick one to launch.</p>
+      <p style="font-size: 15px; color: #57534c; margin: 0; max-width: 320px; line-height: 1.5;">Small tools for the games I keep coming back to. Pick one to launch.</p>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
@@ -87,7 +87,8 @@ class Component extends DCLogic {
     const DEFAULTS = [
       { name: 'Modpack Index', url: 'https://modpackindex.com', domain: 'modpackindex.com', game: 'Minecraft', year: '2015', color: '#3f7d4e', desc: 'Search & filter 143,000+ modpacks by mod, version, loader & category.' },
       { name: 'Norrath Transit Authority', url: 'https://eqnta.com', domain: 'eqnta.com', game: 'EverQuest', year: '2026', color: '#2f6d8f', desc: 'Plan the fastest route between any two EverQuest zones: boats, PoK books, spires, class ports.' },
-      { name: 'EQLFilter', url: 'https://eqlfilter.com', domain: 'eqlfilter.com', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' }
+      { name: 'EQLFilter', url: 'https://eqlfilter.com', domain: 'eqlfilter.com', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' },
+      { name: 'Piety', url: 'https://github.com/sethryder/piety', domain: 'github.com/sethryder/piety', game: 'Path of Exile', year: '2026', color: '#c04b4b', desc: 'Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer.' }
     ];
     return { projects: this.state.projects || DEFAULTS, copyDiscord: this.copyDiscord, copiedLabel: this.state.copied ? 'copied ✓' : '' };
   }

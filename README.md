@@ -33,4 +33,4 @@ Add an entry to `projects.json`:
 }
 ```
 
-`game` sets the tag color on the home page ("Minecraft" or "EverQuest"). `color` is only used as the card background on launcher.html. If you add a new game name it falls back to the EverQuest tag color.
+`game` sets the tag color on the home page ("Minecraft", "EverQuest", or "Path of Exile"). `color` is only used as the card background on launcher.html. If you add a new game name it falls back to the EverQuest tag color (add it to the `GAMES` map in `index.html` for its own color).
