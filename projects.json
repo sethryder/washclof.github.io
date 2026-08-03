@@ -27,6 +27,15 @@
     "desc": "Build, save & share EverQuest Legends loot filters. No account, runs in your browser."
   },
   {
+    "name": "eqlbis",
+    "url": "https://eqlbis.washclof.com/",
+    "domain": "eqlbis",
+    "game": "EverQuest",
+    "year": "2026",
+    "color": "#8a6db1",
+    "desc": "EverQuest Legends best-in-slot tool: inventory import, tier scaling & pet gear suggestions."
+  },
+  {
     "name": "Piety",
     "url": "https://piety.washclof.com/",
     "domain": "Piety",
