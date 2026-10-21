@@ -10,8 +10,8 @@
   },
   {
     "name": "Norrath Transit Authority",
-    "url": "https://eqnta.com",
-    "domain": "eqnta.com",
+    "url": "https://eqnta.washclof.com/",
+    "domain": "eqnta",
     "game": "EverQuest",
     "year": "2026",
     "color": "#2f6d8f",
@@ -19,8 +19,8 @@
   },
   {
     "name": "EQLFilter",
-    "url": "https://eqlfilter.com",
-    "domain": "eqlfilter.com",
+    "url": "https://eqlfilter.washclof.com/",
+    "domain": "eqlfilter",
     "game": "EverQuest",
     "year": "2026",
     "color": "#b5622f",
