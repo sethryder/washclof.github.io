@@ -9,6 +9,15 @@
     "desc": "Search & filter 143,000+ modpacks by mod, version, loader & category."
   },
   {
+    "name": "Piety",
+    "url": "https://piety.washclof.com/",
+    "domain": "Piety",
+    "game": "Path of Exile",
+    "year": "2026",
+    "color": "#c04b4b",
+    "desc": "Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer."
+  },
+  {
     "name": "Norrath Transit Authority",
     "url": "https://eqnta.washclof.com/",
     "domain": "eqnta",
@@ -34,14 +43,5 @@
     "year": "2026",
     "color": "#8a6db1",
     "desc": "EverQuest Legends best-in-slot tool: inventory import, tier scaling & pet gear suggestions."
-  },
-  {
-    "name": "Piety",
-    "url": "https://piety.washclof.com/",
-    "domain": "Piety",
-    "game": "Path of Exile",
-    "year": "2026",
-    "color": "#c04b4b",
-    "desc": "Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer."
   }
 ]
