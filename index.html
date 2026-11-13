@@ -104,12 +104,14 @@ class Component extends DCLogic {
       { name: 'Piety', url: 'https://piety.washclof.com/', domain: 'Piety', game: 'Path of Exile', year: '2026', color: '#c04b4b', desc: 'Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer.' },
       { name: 'Norrath Transit Authority', url: 'https://eqnta.washclof.com/', domain: 'eqnta', game: 'EverQuest', year: '2026', color: '#2f6d8f', desc: 'Plan the fastest route between any two EverQuest zones: boats, PoK books, spires, class ports.' },
       { name: 'EQLFilter', url: 'https://eqlfilter.washclof.com/', domain: 'eqlfilter', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' },
-      { name: 'eqlbis', url: 'https://eqlbis.washclof.com/', domain: 'eqlbis', game: 'EverQuest', year: '2026', color: '#8a6db1', desc: 'EverQuest Legends best-in-slot tool: inventory import, tier scaling & pet gear suggestions.' }
+      { name: 'eqlbis', url: 'https://eqlbis.washclof.com/', domain: 'eqlbis', game: 'EverQuest', year: '2026', color: '#8a6db1', desc: 'EverQuest Legends best-in-slot tool: inventory import, tier scaling & pet gear suggestions.' },
+      { name: 'Nightcap', url: 'https://nightcap.washclof.com/', domain: 'nightcap', game: 'Tools', year: '2026', color: '#4a5a8a', desc: 'Tiny Windows tray app that turns your monitors off when you lock your PC, even if a browser is playing video.' }
     ];
     const GAMES = {
       Minecraft: { tag: '#86c99a', border: '#2e4a35' },
       EverQuest: { tag: '#e8b76b', border: '#4d3f22' },
-      'Path of Exile': { tag: '#d98c6a', border: '#4a2c22' }
+      'Path of Exile': { tag: '#d98c6a', border: '#4a2c22' },
+      Tools: { tag: '#8fb3d9', border: '#2a3b4d' }
     };
     const source = this.state.projects || DEFAULTS;
     const projects = source.map(function (p) {
