@@ -26,7 +26,8 @@
   html, body { margin: 0; }
   body { background: #0e100e; font-family: 'JetBrains Mono', monospace; -webkit-font-smoothing: antialiased; }
   @keyframes wc-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-  a { -webkit-tap-highlight-color: transparent; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+  @media (prefers-reduced-motion: reduce) { .wc-pane { transition: none !important; } }
 </style>
 </helmet>
 
@@ -48,21 +49,42 @@
     <h1 style="font-size: clamp(40px, 10vw, 58px); font-weight: 700; margin: 0 0 20px; letter-spacing: -.02em; color: #eef3ee; display: flex; align-items: center; gap: 4px; line-height: 1;">washclof</h1>
     <p style="font-size: clamp(15px, 3.4vw, 17px); color: #9fb0a3; margin: 0; max-width: 560px; line-height: 1.6;">A sysadmin pretending to be a developer, making tools for the games I love.</p>
 
-    <p style="font-size: 13px; color: #6f8577; margin: clamp(38px, 6vw, 50px) 0 6px; letter-spacing: .04em;"><span style="color: #86c99a;">washclof</span><span style="color: #4f5f52;">@web</span> ~ % <span style="color: #cdd8cf;">ls projects/</span></p>
+    <p id="wc-ls" style="font-size: 13px; color: #6f8577; margin: clamp(38px, 6vw, 50px) 0 6px; letter-spacing: .04em;"><span style="color: #86c99a;">washclof</span><span style="color: #4f5f52;">@web</span> ~ % <span style="color: #cdd8cf;">ls projects/{{ path }}</span></p>
 
-    <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
-      <a href="{{ p.url }}" style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; text-decoration: none; color: inherit; padding: 18px 16px; border-radius: 6px; border: 1px solid #1c261d; margin-top: 10px; transition: background .12s, border-color .12s;" style-hover="background: #141a14; border-color: #2e4a35;">
-        <span>
-          <span style="display: flex; align-items: baseline; gap: 10px 12px; flex-wrap: wrap;">
-            <span style="font-size: clamp(17px, 4vw, 20px); font-weight: 600; color: #eef3ee;">{{ p.domain }}</span>
-            <span style="font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: {{ p.tagColor }}; border: 1px solid {{ p.tagBorder }}; border-radius: 4px; padding: 2px 7px;">{{ p.game }}</span>
-            <span style="font-size: 12px; color: #5f6b60; letter-spacing: .06em;">est. {{ p.year }}</span>
-          </span>
-          <span style="display: block; font-size: 14px; color: #7f9083; margin-top: 8px; line-height: 1.5;">{{ p.desc }}</span>
-        </span>
-        <span style="color: #86c99a; font-size: 20px;">→</span>
-      </a>
-    </sc-for>
+    <!-- two panes stacked in one grid cell; the active one sits at 0, the other is pushed off left/right and clipped.
+         the outgoing pane keeps its height until the slide ends (delayed max-height) so nothing below jumps mid-slide. -->
+    <div id="wc-panes" style="display: grid; overflow: hidden; margin: 0 -4px; padding: 0 4px 4px;">
+      <div class="wc-pane" aria-hidden="{{ folders.hidden }}" style="grid-area: 1 / 1; align-self: start; min-width: 0; transform: translateX({{ folders.x }}); opacity: {{ folders.op }}; visibility: {{ folders.vis }}; max-height: {{ folders.mh }}; transition: transform .4s cubic-bezier(.2,.75,.25,1), opacity .3s ease, visibility .4s, max-height 0s {{ folders.delay }};">
+        <sc-for list="{{ cats }}" as="c" hint-placeholder-count="3">
+          <a href="#{{ c.slug }}" id="wc-cat-{{ c.slug }}" style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; text-decoration: none; color: inherit; padding: 18px 16px; border-radius: 6px; border: 1px solid #1c261d; margin-top: 10px; transition: background .12s, border-color .12s;" style-hover="background: #141a14; border-color: {{ c.tagBorder }};">
+            <span>
+              <span style="display: flex; align-items: baseline; gap: 10px 12px; flex-wrap: wrap;">
+                <span style="font-size: clamp(17px, 4vw, 20px); font-weight: 600; color: {{ c.tagColor }};">{{ c.slug }}/</span>
+                <span style="font-size: 12px; color: #5f6b60; letter-spacing: .06em;">{{ c.count }}</span>
+              </span>
+              <span style="display: block; font-size: 14px; color: #7f9083; margin-top: 8px; line-height: 1.5;">{{ c.names }}</span>
+            </span>
+            <span style="color: #86c99a; font-size: 20px;">→</span>
+          </a>
+        </sc-for>
+      </div>
+
+      <div class="wc-pane" aria-hidden="{{ inside.hidden }}" style="grid-area: 1 / 1; align-self: start; min-width: 0; transform: translateX({{ inside.x }}); opacity: {{ inside.op }}; visibility: {{ inside.vis }}; max-height: {{ inside.mh }}; transition: transform .4s cubic-bezier(.2,.75,.25,1), opacity .3s ease, visibility .4s, max-height 0s {{ inside.delay }};">
+        <a href="#" id="wc-back" style="display: inline-block; font-size: 14px; color: #6f8577; text-decoration: none; padding: 8px 0 2px; transition: color .12s;" style-hover="color: #86c99a;">← cd ..</a>
+        <sc-for list="{{ projects }}" as="p">
+          <a href="{{ p.url }}" style="display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; text-decoration: none; color: inherit; padding: 18px 16px; border-radius: 6px; border: 1px solid #1c261d; margin-top: 10px; transition: background .12s, border-color .12s;" style-hover="background: #141a14; border-color: {{ p.tagBorder }};">
+            <span>
+              <span style="display: flex; align-items: baseline; gap: 10px 12px; flex-wrap: wrap;">
+                <span style="font-size: clamp(17px, 4vw, 20px); font-weight: 600; color: #eef3ee;">{{ p.domain }}</span>
+                <span style="font-size: 12px; color: #5f6b60; letter-spacing: .06em;">est. {{ p.year }}</span>
+              </span>
+              <span style="display: block; font-size: 14px; color: #7f9083; margin-top: 8px; line-height: 1.5;">{{ p.desc }}</span>
+            </span>
+            <span style="color: #86c99a; font-size: 20px;">→</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
 
     <p style="font-size: 13px; color: #6f8577; margin: clamp(30px, 5vw, 38px) 0 0; letter-spacing: .04em;"><span style="color: #86c99a;">washclof</span><span style="color: #4f5f52;">@web</span> ~ % <span style="color: #cdd8cf;">_</span><span style="display: inline-block; width: 9px; height: 15px; background: #cdd8cf; margin-left: 2px; vertical-align: -2px; animation: wc-blink 1.15s steps(1) infinite;"></span></p>
   </main>
@@ -79,7 +101,32 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { projects: null, copied: false };
+  state = { projects: null, copied: false, hash: location.hash.slice(1), last: location.hash.slice(1) };
+
+  go = (hash) => {
+    if (hash === this.state.hash) return;
+    const prev = this.state.hash, box = document.getElementById('wc-panes');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // pin the list area at its current height, then ease it to the incoming pane's height alongside the slide,
+    // so the page below grows/shrinks smoothly instead of snapping (and yanking your scroll) when the slide ends
+    if (box) box.style.height = box.offsetHeight + 'px';
+    this.setState({ hash: hash, last: hash || this.state.last });
+    clearTimeout(this._go); clearTimeout(this._done);
+    this._go = setTimeout(function () {    // a tick: let the new pane render (and stop counting as hidden for focus)
+      const pane = box && box.querySelector('.wc-pane[aria-hidden="false"]');
+      if (pane) {
+        box.style.transition = reduce ? '' : 'height .4s cubic-bezier(.2,.75,.25,1)';
+        box.style.height = (pane.offsetHeight + 4) + 'px';   // + the box's 4px bottom padding
+      }
+      // only scroll if the list has scrolled off the top; otherwise leave the page exactly where it is
+      const ls = document.getElementById('wc-ls');
+      if (ls && ls.getBoundingClientRect().top < 0) ls.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' });
+      // move focus into the pane that slid in, so keyboard users aren't left on a hidden link
+      const el = document.getElementById(hash ? 'wc-back' : 'wc-cat-' + prev);
+      if (el) el.focus({ preventScroll: true });
+    }, 40);
+    this._done = setTimeout(function () { if (box) { box.style.height = ''; box.style.transition = ''; } }, 480);
+  };
 
   copyDiscord = () => {
     const done = () => {
@@ -92,6 +139,21 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
+    // hash drives the slide, so the browser back button slides back too.
+    // we do our own scrolling (see go), so stop the browser restoring saved positions on back/forward.
+    history.scrollRestoration = 'manual';
+    addEventListener('hashchange', () => { this._pushed = false; this.go(location.hash.slice(1)); });
+    // folder / cd .. clicks: change the URL ourselves so the browser never jumps (href="#" would scroll to top)
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest && e.target.closest('main .wc-pane a[href^="#"]');
+      if (!a || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      const hash = a.getAttribute('href').slice(1);
+      if (!hash && this._pushed) { this._pushed = false; history.back(); return; }  // pop our own entry; hashchange runs go()
+      if (hash) { history.pushState(null, '', '#' + hash); this._pushed = true; }
+      else history.replaceState(null, '', location.pathname + location.search);
+      this.go(hash);
+    });
     fetch('./projects.json')
       .then(function (r) { return r.json(); })
       .then((projects) => this.setState({ projects }))
@@ -102,6 +164,7 @@ class Component extends DCLogic {
     const DEFAULTS = [
       { name: 'Modpack Index', url: 'https://modpackindex.com', domain: 'modpackindex.com', game: 'Minecraft', year: '2015', color: '#3f7d4e', desc: 'Search & filter 143,000+ modpacks by mod, version, loader & category.' },
       { name: 'Piety', url: 'https://piety.washclof.com/', domain: 'Piety', game: 'Path of Exile', year: '2026', color: '#c04b4b', desc: 'Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer.' },
+      { name: 'Aris', url: 'https://aris.washclof.com/', domain: 'aris', game: 'Path of Exile', year: '2026', color: '#7a4fa0', desc: 'Compare two Path of Exile characters side by side: passive tree, gems, items & Path of Building calcs, in your browser.' },
       { name: 'Norrath Transit Authority', url: 'https://eqnta.washclof.com/', domain: 'eqnta', game: 'EverQuest', year: '2026', color: '#2f6d8f', desc: 'Plan the fastest route between any two EverQuest zones: boats, PoK books, spires, class ports.' },
       { name: 'EQLFilter', url: 'https://eqlfilter.washclof.com/', domain: 'eqlfilter', game: 'EverQuest', year: '2026', color: '#b5622f', desc: 'Build, save & share EverQuest Legends loot filters. No account, runs in your browser.' },
       { name: 'eqlbis', url: 'https://eqlbis.washclof.com/', domain: 'eqlbis', game: 'EverQuest', year: '2026', color: '#8a6db1', desc: 'EverQuest Legends best-in-slot tool: inventory import, tier scaling & pet gear suggestions.' },
@@ -113,12 +176,36 @@ class Component extends DCLogic {
       'Path of Exile': { tag: '#d98c6a', border: '#4a2c22' },
       Tools: { tag: '#8fb3d9', border: '#2a3b4d' }
     };
-    const source = this.state.projects || DEFAULTS;
-    const projects = source.map(function (p) {
+    const slug = function (s) { return s.toLowerCase().replace(/\s+/g, '-'); };
+    const all = (this.state.projects || DEFAULTS).map(function (p) {
       const g = GAMES[p.game] || GAMES.EverQuest;
-      return Object.assign({}, p, { tagColor: g.tag, tagBorder: g.border });
+      return Object.assign({}, p, { slug: slug(p.game), tagColor: g.tag, tagBorder: g.border });
     });
-    return { projects: projects, copyDiscord: this.copyDiscord, copiedLabel: this.state.copied ? 'copied ✓' : '' };
+    // categories in first-appearance order of projects.json; folder = slug of `game`
+    const cats = [];
+    all.forEach(function (p) {
+      let c = cats.find(function (c) { return c.slug === p.slug; });
+      if (!c) cats.push(c = { slug: p.slug, tagColor: p.tagColor, tagBorder: p.tagBorder, projects: [] });
+      c.projects.push(p);
+    });
+    cats.forEach(function (c) {
+      c.count = c.projects.length + (c.projects.length === 1 ? ' project' : ' projects');
+      c.names = c.projects.map(function (p) { return p.domain; }).join(', ');
+    });
+    const find = function (s) { return cats.find(function (c) { return c.slug === s; }); };
+    const cat = find(this.state.hash);                       // unknown hash => folder list
+    const shown = cat || find(this.state.last);              // keep last folder's projects on screen while sliding back
+    const pane = function (active, offX) {
+      return active
+        ? { x: '0', op: 1, vis: 'visible', mh: '9999px', delay: '0s', hidden: 'false' }
+        : { x: offX, op: 0, vis: 'hidden', mh: '0px', delay: '.4s', hidden: 'true' };
+    };
+    return {
+      folders: pane(!cat, '-100%'), inside: pane(!!cat, '100%'),
+      cats: cats, path: cat ? cat.slug + '/' : '',
+      projects: shown ? shown.projects : [],
+      copyDiscord: this.copyDiscord, copiedLabel: this.state.copied ? 'copied ✓' : ''
+    };
   }
 }
 </script>
@@ -166,11 +253,13 @@ class Component extends DCLogic {
   }
 
   function lsOut(){
-    var out = [].slice.call(document.querySelectorAll('main a[href^="http"]')).map(function(a){
+    var out = [].slice.call(document.querySelectorAll('main .wc-pane a[href]:not([href="#"])')).filter(function(a){
+      return getComputedStyle(a).visibility === 'visible';
+    }).map(function(a){
       var d = a.querySelector('span span span');
-      return ((d ? d.textContent : a.getAttribute('href')) || '').trim() + '/';
+      return ((d ? d.textContent : a.getAttribute('href')) || '').trim().replace(/\/$/, '') + '/';
     });
-    return out.length ? out.join('   ') : 'modpackindex.com/   eqnta/   eqlfilter/';
+    return out.length ? out.join('   ') : 'minecraft/   path-of-exile/   everquest/   tools/';
   }
 
   var HELP = [
@@ -284,7 +373,8 @@ class Component extends DCLogic {
   document.addEventListener('keydown', function(e){
     if (dead) return;
     var t = e.target;
-    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'BUTTON' || t.isContentEditable)) return;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (t && (t.tagName === 'BUTTON' || t.tagName === 'A') && !buf && (e.key === 'Enter' || e.key === ' ')) return;  // focused link/button activates unless a command is being typed
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === 'Enter') { e.preventDefault(); run(buf); }
     else if (e.key === 'Backspace') { e.preventDefault(); buf = buf.slice(0, -1); render(); }

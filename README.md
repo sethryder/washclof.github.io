@@ -33,4 +33,4 @@ Add an entry to `projects.json`:
 }
 ```
 
-`game` sets the tag color on the home page ("Minecraft", "EverQuest", "Path of Exile", or "Tools" for anything not tied to a game). `color` is only used as the card background on launcher.html. If you add a new game name it falls back to the EverQuest tag color (add it to the `GAMES` map in `index.html` for its own color).
+`game` is also the project's folder on the home page: `ls projects/` lists one folder per game (slugged, e.g. `#path-of-exile`), in the order they first appear in `projects.json`, and clicking one slides over to its projects. It also sets the tag color ("Minecraft", "EverQuest", "Path of Exile", or "Tools" for anything not tied to a game). `color` is only used as the card background on launcher.html. If you add a new game name it falls back to the EverQuest tag color (add it to the `GAMES` map in `index.html` for its own color).

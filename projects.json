@@ -18,6 +18,15 @@
     "desc": "Desktop leveling companion for Path of Exile: live route, gem shopping list, tree progress & pace timer."
   },
   {
+    "name": "Aris",
+    "url": "https://aris.washclof.com/",
+    "domain": "aris",
+    "game": "Path of Exile",
+    "year": "2026",
+    "color": "#7a4fa0",
+    "desc": "Compare two Path of Exile characters side by side: passive tree, gems, items & Path of Building calcs, in your browser."
+  },
+  {
     "name": "Norrath Transit Authority",
     "url": "https://eqnta.washclof.com/",
     "domain": "eqnta",
