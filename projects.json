@@ -27,6 +27,24 @@
     "desc": "Compare two Path of Exile characters side by side: passive tree, gems, items & Path of Building calcs, in your browser."
   },
   {
+    "name": "Timeless Shopper",
+    "url": "https://timeless.washclof.com/",
+    "domain": "timeless",
+    "game": "Path of Exile",
+    "year": "2026",
+    "color": "#3f7f7a",
+    "desc": "Find Path of Exile timeless jewel seeds by the notables you want near your tree, then price them on trade."
+  },
+  {
+    "name": "Forbidden Flame & Flesh prices",
+    "url": "https://forbidden.washclof.com/",
+    "domain": "forbidden",
+    "game": "Path of Exile",
+    "year": "2026",
+    "color": "#a8402f",
+    "desc": "Price both halves of a Forbidden Flame/Flesh pair for any ascendancy notable: poe.ninja trend, live trade median & search links."
+  },
+  {
     "name": "Norrath Transit Authority",
     "url": "https://eqnta.washclof.com/",
     "domain": "eqnta",
